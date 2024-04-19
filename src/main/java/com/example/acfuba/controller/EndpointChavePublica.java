@@ -26,13 +26,15 @@ public class EndpointChavePublica {
     }
 
     @GetMapping("/chavesPublicas")
-    public String obterChavesPublicas(@RequestParam(name = "token") String token) {
+    public Map<String, BigInteger> obterChavesPublicas(@RequestParam(name = "token") String token) {
 
-        System.out.println(token);
+        System.out.println("---------------------------------------");
+        System.out.println("Requisição recebida com o token: " + token);
 
-        // Verifica se o token está presente na URL (Normalmente nem chega nessa validação caso não tenha token)
+        // Verifica se o token está presente na URL
         if(ObjectUtils.isEmpty(token)) {
-            return "Token não fornecido na URL";
+            System.out.println("Token não fornecido na URL");
+            return null;
         }
 
         // Verifica se o token já existe no mapa
@@ -41,7 +43,12 @@ public class EndpointChavePublica {
             BigInteger[] chavesArmazenadas = chavesPublicasMap.get(token);
             BigInteger e = chavesArmazenadas[0];
             BigInteger n = chavesArmazenadas[1];
-            return "Chaves públicas (recuperadas): (" + e + ", " + n + ")";
+            System.out.println("Chaves públicas recuperadas: (e=" + e + ", n=" + n + ")");
+            System.out.println("---------------------------------------");
+            Map<String, BigInteger> chavesPublicas = new HashMap<>();
+            chavesPublicas.put("e", e);
+            chavesPublicas.put("n", n);
+            return chavesPublicas;
         }
 
         int numDigitos = 10; // Número de dígitos para cada número primo
@@ -63,7 +70,14 @@ public class EndpointChavePublica {
         BigInteger[] chaves = {e, n};
         chavesPublicasMap.put(token, chaves);
 
+        // Mensagem formatada para as chaves públicas geradas
+        System.out.println("Chaves públicas geradas: (e=" + e + ", n=" + n + ")");
+        System.out.println("---------------------------------------");
+
         // Retornar as chaves públicas no formato desejado
-        return "Chaves públicas (geradas): (" + e + ", " + n + ")";
+        Map<String, BigInteger> chavesPublicas = new HashMap<>();
+        chavesPublicas.put("e", e);
+        chavesPublicas.put("n", n);
+        return chavesPublicas;
     }
 }
