@@ -26,7 +26,7 @@ public class EndpointChavePublica {
     }
 
     @GetMapping("/chavesPublicas")
-    public Map<String, BigInteger> obterChavesPublicas(@RequestParam(name = "token") String token) {
+    public String obterChavesPublicas(@RequestParam(name = "token") String token) {
 
         System.out.println("---------------------------------------");
         System.out.println("Requisição recebida com o token: " + token);
@@ -34,7 +34,7 @@ public class EndpointChavePublica {
         // Verifica se o token está presente na URL
         if(ObjectUtils.isEmpty(token)) {
             System.out.println("Token não fornecido na URL");
-            return null;
+            return "Token não fornecido. Por favor, forneça um token válido para acessar as chaves públicas.";
         }
 
         // Verifica se o token já existe no mapa
@@ -45,10 +45,7 @@ public class EndpointChavePublica {
             BigInteger n = chavesArmazenadas[1];
             System.out.println("Chaves públicas recuperadas: (e=" + e + ", n=" + n + ")");
             System.out.println("---------------------------------------");
-            Map<String, BigInteger> chavesPublicas = new HashMap<>();
-            chavesPublicas.put("e", e);
-            chavesPublicas.put("n", n);
-            return chavesPublicas;
+            return "Chaves públicas recuperadas: (e=" + e + ", n=" + n + ")";
         }
 
         int numDigitos = 10; // Número de dígitos para cada número primo
@@ -75,9 +72,6 @@ public class EndpointChavePublica {
         System.out.println("---------------------------------------");
 
         // Retornar as chaves públicas no formato desejado
-        Map<String, BigInteger> chavesPublicas = new HashMap<>();
-        chavesPublicas.put("e", e);
-        chavesPublicas.put("n", n);
-        return chavesPublicas;
+        return "Chaves públicas geradas: (e=" + e + ", n=" + n + ")";
     }
 }
