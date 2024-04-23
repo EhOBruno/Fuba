@@ -26,15 +26,14 @@ public class EndpointChavePublica {
     }
 
     @GetMapping("/chavesPublicas")
-    public String obterChavesPublicas(@RequestParam(name = "token") String token) {
-
+    public Map<String, BigInteger> obterChavesPublicas(@RequestParam(name = "token") String token) {
         System.out.println("---------------------------------------");
         System.out.println("Requisição recebida com o token: " + token);
 
         // Verifica se o token está presente na URL
         if(ObjectUtils.isEmpty(token)) {
             System.out.println("Token não fornecido na URL");
-            return "Token não fornecido. Por favor, forneça um token válido para acessar as chaves públicas.";
+            return null;
         }
 
         // Verifica se o token já existe no mapa
@@ -45,7 +44,10 @@ public class EndpointChavePublica {
             BigInteger n = chavesArmazenadas[1];
             System.out.println("Chaves públicas recuperadas: (e=" + e + ", n=" + n + ")");
             System.out.println("---------------------------------------");
-            return "Chaves públicas recuperadas: (e=" + e + ", n=" + n + ")";
+            Map<String, BigInteger> chavesPublicas = new HashMap<>();
+            chavesPublicas.put("e", e);
+            chavesPublicas.put("n", n);
+            return chavesPublicas;
         }
 
         int numDigitos = 10; // Número de dígitos para cada número primo
@@ -63,6 +65,10 @@ public class EndpointChavePublica {
         // Calcular a segunda chave pública "e"
         BigInteger e = CalculaChavePublica.calcularChavePublicaE(fiN);
 
+        // Calcular a chave privada "d"
+        BigInteger d = calcularChavePrivada(e, fiN);
+        System.out.println("Chave privada gerada: d=" + d); // Print da chave privada gerada
+
         // Armazenar as chaves públicas no mapa
         BigInteger[] chaves = {e, n};
         chavesPublicasMap.put(token, chaves);
@@ -72,6 +78,15 @@ public class EndpointChavePublica {
         System.out.println("---------------------------------------");
 
         // Retornar as chaves públicas no formato desejado
-        return "Chaves públicas geradas: (e=" + e + ", n=" + n + ")";
+        Map<String, BigInteger> chavesPublicas = new HashMap<>();
+        chavesPublicas.put("e", e);
+        chavesPublicas.put("n", n);
+        chavesPublicas.put("d", d); // Adicionando a chave privada "d" ao JSON
+        return chavesPublicas;
+    }
+
+    // Método para calcular a chave privada (d)
+    private BigInteger calcularChavePrivada(BigInteger e, BigInteger fiN) {
+        return e.modInverse(fiN);
     }
 }
