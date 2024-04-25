@@ -1,7 +1,6 @@
 package com.example.acfuba.controller;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,7 @@ import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
 
-@SpringBootApplication
+
 @RestController
 public class EndpointChavePublica {
 
@@ -56,14 +55,25 @@ public class EndpointChavePublica {
         BigInteger p = GerarPrimoAleatorio.gerarPrimoAleatorio(numDigitos);
         BigInteger q = GerarPrimoAleatorio.gerarPrimoAleatorio(numDigitos);
 
+        System.out.println("Primo 1: "+p);
+        System.out.println("Primo 2: "+q);
+       
+        // BigInteger p = BigInteger.valueOf(11);
+        // BigInteger q = BigInteger.valueOf(17);
+    
         // Calcular n (produto de p e q)
         BigInteger n = CalculaChavePublica.calcularN(p, q);
+        System.err.println("produto: "+n);
 
         // Calcular fi(n)
         BigInteger fiN = CalculaChavePublica.calcularFiN(p, q);
+        System.err.println("fi: "+fiN);
+        
 
         // Calcular a segunda chave pública "e"
         BigInteger e = CalculaChavePublica.calcularChavePublicaE(fiN);
+        System.err.println("mdc: "+e);
+
 
         // Calcular a chave privada "d"
         BigInteger d = calcularChavePrivada(e, fiN);
